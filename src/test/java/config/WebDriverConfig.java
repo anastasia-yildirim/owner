@@ -3,7 +3,6 @@ package config;
 import org.aeonbits.owner.Config;
 
 @Config.Sources({
-        "system:properties",
         "classpath:${env}.properties"
 })
 public interface WebDriverConfig extends Config {
@@ -13,7 +12,7 @@ public interface WebDriverConfig extends Config {
     Browser getBrowser();
 
     @Key("browserVersion")
-    @DefaultValue("123.0")
+    @DefaultValue("129.0")
     String getBrowserVersion();
 
     @Key("browserSize")

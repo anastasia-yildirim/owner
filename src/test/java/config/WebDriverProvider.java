@@ -1,13 +1,15 @@
 package config;
 
-import com.codeborne.selenide.Configuration;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.function.Supplier;
 
 public class WebDriverProvider implements Supplier<WebDriver> {
@@ -20,29 +22,33 @@ public class WebDriverProvider implements Supplier<WebDriver> {
 
     @Override
     public WebDriver get() {
-        WebDriver driver = createDriver();
+        WebDriver driver;
+        try {
+            driver = createDriver();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
         driver.get(config.getBaseUrl());
         return driver;
     }
 
-    public WebDriver createDriver() {
-
-        // новая версия
-
-        Configuration.baseUrl = config.getBaseUrl();
-        Configuration.browser = String.valueOf(config.getBrowser());
-        Configuration.browserVersion = config.getBrowserVersion();
-        Configuration.browserSize = config.getBrowserSize();
+    public WebDriver createDriver() throws MalformedURLException {
 
         if (config.isRemote()) {
-            Configuration.remote = config.getRemoteUrl();
+
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setCapability("enableVNC", true);
             capabilities.setCapability("enableVideo", true);
-            Configuration.browserCapabilities = capabilities;
+
+            capabilities.setBrowserName(config.getBrowser().toString());
+            capabilities.setVersion(config.getBrowserVersion());
+
+            return new RemoteWebDriver(new URL(config.getRemoteUrl()), capabilities);
         }
 
-        // старая версия
+        System.out.println("Using browser: " + config.getBrowser());
+        System.out.println("Browser version: " + config.getBrowserVersion());
+        System.out.println("Base URL: " + config.getBaseUrl());
 
         switch (config.getBrowser()) {
             case CHROME: {

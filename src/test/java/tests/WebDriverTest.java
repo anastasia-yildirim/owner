@@ -3,10 +3,12 @@ package tests;
 import config.WebDriverProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class WebDriverTest {
     private WebDriver driver;
@@ -16,6 +18,7 @@ public class WebDriverTest {
         driver = new WebDriverProvider().get();
     }
 
+    @Tag("selenium")
     @Test
     public void testGithub() {
         String title = driver.getTitle();

@@ -11,12 +11,14 @@ repositories {
 
 dependencies {
     testImplementation(
-            'org.junit.jupiter:junit-jupiter-api:5.8.1',
-            'com.codeborne:selenide:6.9.0',
+            'org.junit.jupiter:junit-jupiter-api:5.11.2',
+            'com.codeborne:selenide:7.5.0',
             'org.seleniumhq.selenium:selenium-java:3.141.59',
-            'io.github.bonigarcia:webdrivermanager:5.2.1',
+            'io.github.bonigarcia:webdrivermanager:5.9.2',
             'org.aeonbits.owner:owner:1.0.4',
-            'org.assertj:assertj-core:3.23.1'
+            'org.assertj:assertj-core:3.23.1',
+            'org.slf4j:slf4j-api:2.0.16',
+            'org.slf4j:slf4j-simple:2.0.16'
     )
     testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.8.1')
 }
@@ -24,4 +26,20 @@ dependencies {
 test {
     useJUnitPlatform()
     systemProperties(System.getProperties())
+}
+
+tasks.withType(Test).configureEach {
+    systemProperties(System.getProperties())
+}
+
+tasks.register('selenium', Test) {
+    useJUnitPlatform {
+        includeTags 'selenium'
+    }
+}
+
+tasks.register('selenide', Test) {
+    useJUnitPlatform {
+        includeTags 'selenide'
+    }
 }
